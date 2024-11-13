@@ -3,7 +3,7 @@ esphome:
   friendly_name: ESPHome - I2C Sensor
   comment: ESP32-C3-MINI-1-N4 V2024.7.1
   project:
-    name: "RSVH.PROJECT"
+    name: "RSVH.I2C_SENSOR"
     version: "2024.11.0"
 
 esp32:
