@@ -1,0 +1,147 @@
+substitutions:
+  name: "esphome-axa-remote-2-2024-10-0"
+
+esphome:
+  name: "$name"
+  friendly_name: ESPHome - AXA Remote 2.0
+  comment: ESP32-C3-MINI-1-N4 - AXA Remote 2.0 Controler V2024.10.0
+  project:
+    name: "RSVH.AXA_Remote_2_Controler"
+    version: "2024.10.0"
+  includes:
+    - "src/espaxa-dev.h"
+  on_boot:
+    priority: -10
+    then:
+      - uart.write: "\r\n"
+      - delay: 100ms
+      - uart.write: "STOP\r\n"
+      - delay: 100ms
+      - uart.write: "CLOSE\r\n"
+
+esp32:
+  board: esp32-c3-devkitm-1
+  framework:
+    type: arduino
+    version: latest
+
+packages:
+  base_general: !include .general-config.yaml
+  # base_general: !include .general-config-web-disabled.yaml
+  base_esp32: !include .esp32.yaml
+
+logger:
+  # logs:
+  #   component: ERROR
+
+wifi:
+  # manual_ip:
+  #   static_ip: 10.10.30.X
+  #   gateway: 10.10.30.1
+  #   subnet: 255.255.255.0
+    
+status_led:
+  pin:
+    number: GPIO2
+    inverted: True
+
+uart:
+  tx_pin: GPIO4
+  rx_pin: GPIO5
+  baud_rate: 19200
+  stop_bits: 2
+  id: uart_bus
+
+output:
+  - platform: gpio
+    pin: GPIO3
+    inverted: True
+    id: led_green
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: 9
+      inverted: true
+    name: BOOT Button
+    icon: mdi:radiobox-marked
+    on_press:
+      then:
+        - light.turn_on: led_green_light
+    on_release:
+      then:
+        - light.turn_off: led_green_light
+
+light:
+  - platform: binary
+    name: "LED Green"
+    id: led_green_light
+    icon: mdi:led-variant-outline
+    output: led_green
+    internal: True
+
+custom_component:
+  - lambda: |-
+      auto axa = new CustomAXA2RemoteUART(id(uart_bus));
+      App.register_component(axa);
+      return {axa};
+
+text_sensor:
+  - platform: custom
+    lambda: |-
+      auto axa = new CustomAXA2RemoteUART(id(uart_bus));
+      App.register_component(axa);
+      return {axa->axa_status_text};
+    text_sensors:
+      - name: "AXA Status"
+        icon: mdi:lock
+        id: axa_status_text
+
+sensor:
+  - platform: custom
+    lambda: |-
+      auto axa = new CustomAXA2RemoteUART(id(uart_bus));
+      App.register_component(axa);
+      return {axa->axa_window};
+    sensors:
+      - name: "Status"
+        id: axa_window_status
+        internal: True
+
+cover:
+  - platform: template
+    name: "Raam"
+    assumed_state: True
+    lambda: |-
+      if (id(axa_window_status).state) {
+        return COVER_OPEN;
+      } else {
+        return COVER_CLOSED;
+      }
+    open_action:
+      - logger.log: "Window open action triggered"
+      - light.turn_on: led_green_light
+      - uart.write: "\r"
+      - delay: 0.1s
+      - uart.write: "STOP\r\n"
+      - delay: 0.1s
+      - uart.write: "OPEN\r\n"
+      - light.turn_off: led_green_light
+    close_action:
+      - logger.log: "Window close action triggered"
+      - light.turn_on: led_green_light
+      - uart.write: "\r"
+      - delay: 0.1s
+      - uart.write: "STOP\r\n"
+      - delay: 0.1s
+      - uart.write: "OPEN\r\n"
+      - delay: 0.1s
+      - uart.write: "CLOSE\r\n"
+      - light.turn_off: led_green_light
+    stop_action:
+      - logger.log: "Window stop action triggered"
+      - light.turn_on: led_green_light
+      - uart.write: "\r"
+      - delay: 0.1s
+      - uart.write: "STOP\r\n"
+      - light.turn_off: led_green_light
