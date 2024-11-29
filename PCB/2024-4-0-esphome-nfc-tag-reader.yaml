@@ -1,5 +1,5 @@
 esphome:
-  name: "esphome-nfc-tag-reader-2024-4-0"
+  name: esphome-nfc-tag-reader-2024-4-0
   friendly_name: ESPHome - NFC Tag Reader V2024.4.0
   on_boot:
     priority: -10

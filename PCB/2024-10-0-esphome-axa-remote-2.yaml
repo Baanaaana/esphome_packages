@@ -1,5 +1,5 @@
 substitutions:
-  name: "esphome-axa-remote-2-2024-10-0"
+  name: esphome-axa-remote-2-2024-10-0
 
 esphome:
   name: "$name"

@@ -1,5 +1,5 @@
 substitutions:
-  name: "esphome-presence-light-2024-7-1"
+  name: esphome-presence-light-2024-7-1
 
 esphome:
   name: "$name"
