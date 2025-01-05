@@ -55,13 +55,13 @@ sensor:
               ).c_str();
 
   - platform: wifi_signal
-    id: wifi_signal_db
+    id: wifi_signaldb
     name: WiFi Signal
     update_interval: 60s
     icon: mdi:wifi
 
   - platform: copy # Reports the WiFi signal strength in %
-    source_id: wifi_signal_db
+    source_id: wifi_signaldb
     name: "WiFi Signal Percent"
     filters:
       - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
