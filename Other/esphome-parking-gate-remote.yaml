@@ -1,0 +1,47 @@
+esphome:
+  name: esphome-parking-gate-remote
+  friendly_name: ESPHome - Parking Gate Remote
+  platformio_options:
+   board_build.flash_mode: dio
+
+esp32:
+  board: seeed_xiao_esp32c3
+  variant: esp32c3
+  framework:
+    type: arduino
+    platform_version: 5.4.0
+
+packages:
+  device_base:
+    url: https://github.com/Baanaaana/esphome_yaml
+    ref: main
+    files: [
+      'packages/base_config.yaml',
+      'packages/web_server.yaml',
+      'packages/internal_temperature.yaml'
+      ]
+    refresh: 0s
+  
+logger:
+  logs:
+    component: ERROR
+
+wifi:
+  # manual_ip:
+  #   static_ip: 10.10.74.x
+  #   gateway: 10.10.74.1
+  #   subnet: 255.255.255.0
+
+output:
+  - platform: gpio
+    pin:
+      number: GPIO10
+      inverted: true
+    id: output_open
+
+button:
+  - platform: output
+    name: "Openen"
+    icon: mdi:gate
+    output: output_open
+    duration: 500ms
