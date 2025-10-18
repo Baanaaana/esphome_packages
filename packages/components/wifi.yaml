@@ -1,0 +1,19 @@
+wifi:
+  reboot_timeout: 5min
+  networks:
+  - ssid: !secret wifi_ssid
+    password: !secret wifi_password
+    priority: 1
+  - ssid: !secret wifi_ssid_rrc
+    password: !secret wifi_password_rrc
+    priority: 2
+    
+  ap:
+    ssid: "${name}"
+    password: !secret ap_password
+
+captive_portal:
+
+ota:
+  platform: esphome
+  password: !secret ota_password

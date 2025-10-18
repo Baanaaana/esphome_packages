@@ -1,0 +1,32 @@
+sensor:
+  - platform: wifi_signal
+    id: wifi_signaldb
+    name: WiFi Signal
+    update_interval: 60s
+    icon: mdi:wifi
+
+  - platform: copy # Reports the WiFi signal strength in %
+    source_id: wifi_signaldb
+    name: "WiFi Signal Percent"
+    filters:
+      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
+    unit_of_measurement: "%"
+    entity_category: "diagnostic"
+    device_class: ""
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: "IP Address"
+      id: ip_address
+      icon: mdi:ip
+    mac_address:
+      name: "MAC Address"
+      icon: mdi:wifi-settings
+    ssid:
+      name: "SSID"
+      id: ssid_address
+      icon: mdi:wifi-settings
+    bssid:
+      name: "BSSID"
+      icon: mdi:wifi-settings
