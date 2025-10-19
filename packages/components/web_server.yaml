@@ -1,5 +1,6 @@
 web_server:
   version: 3
+  local: true
   port: 80
   auth:
     username: !secret web_server_username
